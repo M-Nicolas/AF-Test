@@ -12,3 +12,8 @@ INSTALLATION & EXECUTION
    
  * you'll find in the postman directory some postman template that will allow you to call the main methods of this
  application : there's only one call per type of method.
+ 
+IDEAS FOR ENHANCEMENT
+---------------------
+ * To enhance the application, I would have liked to add a DB object like a Country to add a code, name, phone prefix correspondance with the user's country. this could have allowed the possibility to limit the countries that could be inputed in the application.
+ * I would have also liked to add an auto trimming on each fields in order to prevent the input of data with trailing whitespaces.
