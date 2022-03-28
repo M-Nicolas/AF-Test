@@ -17,7 +17,6 @@ import com.af.test.spring.users.entities.User;
 public class RequestInterceptor {
 
 	private Map<Long, Date> startTimeGetWithId = new HashMap<>();
-	
 	@Before(value = "execution(* com.af.test.spring.users.controllers.UserController.getUser(..)) and args(id)")
 	public void beforeAdvice(JoinPoint joinPoint, Long id) {
 		System.out.println("Before method:" + joinPoint.getSignature());
@@ -26,7 +25,7 @@ public class RequestInterceptor {
 		System.out.println("Searching User with id - " + id + " at time: " + startTimeGetWithId.get(id));
 	}
 
-	@After(value = "execution(* com.af.test.spring.users.controllers.UserController.*(..)) and args(id)")
+	@After(value = "execution(* com.af.test.spring.users.controllers.UserController.getUser(..)) and args(id)")
 	public void afterAdvice(JoinPoint joinPoint, Long id) {
 		System.out.println("After method:" + joinPoint.getSignature());
 
@@ -36,7 +35,7 @@ public class RequestInterceptor {
 	}
 	
 	private Map<String, Date> startTimeWithUsername = new HashMap<>();
-	@Before(value = "execution(* com.af.test.spring.users.controllers.UserController.getUser(..)) and args(username)")
+	@Before(value = "execution(* com.af.test.spring.users.controllers.UserController.getUserByUsername(..)) and args(username)")
 	public void beforeAdvice(JoinPoint joinPoint, String username) {
 		System.out.println("Before method:" + joinPoint.getSignature());
 
@@ -44,7 +43,7 @@ public class RequestInterceptor {
 		System.out.println("Searching User with username - " + username + " at time: " + startTimeWithUsername.get(username));
 	}
 	
-	@After(value = "execution(* com.af.test.spring.users.controllers.UserController.*(..)) and args(username)")
+	@After(value = "execution(* com.af.test.spring.users.controllers.UserController.getUserByUsername(..)) and args(username)")
 	public void afterAdvice(JoinPoint joinPoint, String username) {
 		System.out.println("After method:" + joinPoint.getSignature());
 
@@ -53,21 +52,57 @@ public class RequestInterceptor {
 		startTimeWithUsername.remove(username);
 	}
 	
-	private Map<User, Date> startTimeRegistering = new HashMap<>();
-	@Before(value = "execution(* com.af.test.spring.users.controllers.UserController.getUser(..)) and args(userModel)")
+	private Map<String, Date> startTimeRegistering = new HashMap<>();
+	@Before(value = "execution(* com.af.test.spring.users.controllers.UserController.registerUser(..)) and args(userModel)")
 	public void beforeAdvice(JoinPoint joinPoint, User userModel) {
 		System.out.println("Before method:" + joinPoint.getSignature());
 
-		startTimeRegistering.put(userModel, new Date());
-		System.out.println("Registering User with username - " + userModel.getUsername() + " at time: " + startTimeRegistering.get(userModel));
+		startTimeRegistering.put(userModel.getUsername(), new Date());
+		System.out.println("Registering User with username - " + userModel.getUsername() + " at time: " + startTimeRegistering.get(userModel.getUsername()));
 	}
 	
-	@After(value = "execution(* com.af.test.spring.users.controllers.UserController.*(..)) and args(userModel)")
+	@After(value = "execution(* com.af.test.spring.users.controllers.UserController.registerUser(..)) and args(userModel)")
 	public void afterAdvice(JoinPoint joinPoint, User userModel) {
 		System.out.println("After method:" + joinPoint.getSignature());
 
-		Long execTime = (startTimeRegistering.get(userModel).getTime() - new Date().getTime());
-		System.out.println("Registering User with username - " + userModel.getUsername()r + " in " + execTime + " ms");
+		Long execTime = (startTimeRegistering.get(userModel.getUsername()).getTime() - new Date().getTime());
+		System.out.println("Registering User with username - " + userModel.getUsername() + " in " + execTime + " ms");
 		startTimeRegistering.remove(userModel);
+	}
+	
+	private Map<String, Date> startTimeUpdating = new HashMap<>();
+	@Before(value = "execution(* com.af.test.spring.users.controllers.UserController.updateUser(..)) and args(id, userModel)")
+	public void beforeAdvice(JoinPoint joinPoint, Long id, User userModel) {
+		System.out.println("Before method:" + joinPoint.getSignature());
+
+		startTimeUpdating.put(userModel.getUsername(), new Date());
+		System.out.println("Updating User with id - " + id + " at time: " + startTimeUpdating.get(userModel.getUsername()));
+	}
+	
+	@After(value = "execution(* com.af.test.spring.users.controllers.UserController.updateUser(..)) and args(id, userModel)")
+	public void afterAdvice(JoinPoint joinPoint, Long id, User userModel) {
+		System.out.println("After method:" + joinPoint.getSignature());
+
+		Long execTime = (startTimeUpdating.get(userModel.getUsername()).getTime() - new Date().getTime());
+		System.out.println("Updating User with id - " + id + " in " + execTime + " ms");
+		startTimeUpdating.remove(userModel);
+	}
+	
+	private Map<Long, Date> startTimeDeleteWithId = new HashMap<>();
+	@Before(value = "execution(* com.af.test.spring.users.controllers.UserController.deleteUser(..)) and args(id)")
+	public void beforeDeleteAdvice(JoinPoint joinPoint, Long id) {
+		System.out.println("Before method:" + joinPoint.getSignature());
+
+		startTimeDeleteWithId.put(id, new Date());
+		System.out.println("Deleting User with id - " + id + " at time: " + startTimeDeleteWithId.get(id));
+	}
+
+	@After(value = "execution(* com.af.test.spring.users.controllers.UserController.deleteUser(..)) and args(id)")
+	public void afterDeleteAdvice(JoinPoint joinPoint, Long id) {
+		System.out.println("After method:" + joinPoint.getSignature());
+
+		Long execTime = (startTimeDeleteWithId.get(id).getTime() - new Date().getTime());
+		System.out.println("Deleting get User with id - " + id + " in " + execTime + " ms");
+		startTimeDeleteWithId.remove(id);
 	}
 }
